@@ -1,0 +1,40 @@
+{
+  "name": "move-sort",
+  "version": "1.1.0",
+  "repository": "https://github.com/syropian/move-sort",
+  "author": "Collin Henderson <collin@syropia.net>",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/move-sort.cjs",
+  "module": "./dist/move-sort.mjs",
+  "exports": {
+    ".": {
+      "require": "./dist/move-sort.cjs",
+      "import": "./dist/move-sort.mjs"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint --ext .ts --ignore-path .gitignore ./src ./test --fix",
+    "format": "prettier ./src ./test -w -u"
+  },
+  "devDependencies": {
+    "@types/node": "^18.7.23",
+    "@typescript-eslint/eslint-plugin": "^5.38.1",
+    "@typescript-eslint/parser": "^5.38.1",
+    "eslint": "^8.24.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.7.1",
+    "typescript": "^4.6.4",
+    "vite": "^3.1.0",
+    "vite-plugin-dts": "^1.6.4",
+    "vitest": "^0.23.4"
+  }
+}
