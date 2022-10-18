@@ -13,8 +13,7 @@ export default class<T> {
 
   private selectedItems = [] as T[]
 
-  private lastSelectedItem: T | null = null
-  private lastNonShiftSelectedItem: T | null = null
+  private lastNonShiftClickedItem: T | null = null
 
   private defaultConfig: Config = {
     ctrlKey: false,
@@ -34,26 +33,62 @@ export default class<T> {
 
       this.selectedItems = this.items.slice(0, index + 1)
     } else {
-      const lastItem = this.lastSelectedItem as T
-      const lastIndex = this.items.indexOf(lastItem)
-      const lastNonShiftItem = this.lastNonShiftSelectedItem as T
+      const lastNonShiftItem = this.lastNonShiftClickedItem as T
       const lastNonShiftIndex = this.items.indexOf(lastNonShiftItem)
-      const newIndex = this.items.indexOf(item)
-      const startIndex = Math.min(lastNonShiftIndex, newIndex)
-      const endIndex = Math.max(lastNonShiftIndex, newIndex) + 1
 
-      // We want to keep any items selected items that are not adjacent to the range
-      const keepItems = this.selectedItems.filter(item => {
-        const index = this.items.indexOf(item)
-        if (newIndex < lastNonShiftIndex) {
-          return index <= newIndex || index >= lastIndex + 2
+      const newIndex = this.items.indexOf(item)
+
+      let startIndex = 0
+      let endIndex = 0
+
+      if (this.itemIsSelected(lastNonShiftItem)) {
+        startIndex = Math.min(lastNonShiftIndex, newIndex)
+        endIndex = Math.max(lastNonShiftIndex, newIndex)
+      } else {
+        // THINK IN GROUPS!!!
+
+        const groups = this.itemsAsGroups()
+        const selectedGroup = groups.find(group =>
+          group.includes(this.items[newIndex])
+        )
+        if (selectedGroup) {
+          // If the last clicked item was not selected (i.e it was toggled off) we need to set our end range to the first item of the next adjacent group
+          if (lastNonShiftIndex > newIndex) {
+            const nextGroupIndex = groups.indexOf(selectedGroup) + 1
+
+            startIndex = newIndex
+            endIndex = this.items.findIndex(
+              item => item === groups[nextGroupIndex][0]
+            )
+          } else {
+            startIndex = this.items.findIndex(item => item === selectedGroup[0])
+            endIndex = newIndex
+          }
         } else {
-          return index < lastIndex - 2 || index > newIndex + 1
+          const nextGroupIndex = groups.findIndex(group =>
+            group.some(item => this.items.indexOf(item) > lastNonShiftIndex)
+          )
+          const nextGroupItem = this.items.findIndex(
+            item => item === groups[nextGroupIndex][0]
+          )
+
+          if (lastNonShiftIndex > newIndex) {
+            startIndex = newIndex
+            endIndex = nextGroupItem
+          } else {
+            startIndex = nextGroupItem
+            endIndex = newIndex
+          }
         }
+      }
+
+      const primaryGroup = this.items.slice(startIndex, endIndex + 1)
+      const filteredGroup = this.itemsAsGroups().filter(group => {
+        return !primaryGroup.some(item => group.includes(item))
       })
 
       this.selectedItems = [
-        ...new Set([...keepItems, ...this.items.slice(startIndex, endIndex)]),
+        ...new Set([...primaryGroup, ...filteredGroup.flat()]),
       ].sort((a, b) => this.items.indexOf(a) - this.items.indexOf(b))
     }
   }
@@ -84,13 +119,22 @@ export default class<T> {
     return this.selectedItems.includes(item)
   }
 
-  // private createRange(start: number, end: number) {
-  //   return Array.from({ length: end - start + 1 }, (_, i) => start + i)
-  // }
+  private itemsAsGroups(): Array<T[]> {
+    return this.items.reduce((items, item) => {
+      if (!this.itemIsSelected(item) || items.flat().includes(item))
+        return items
 
-  // private clamp(value: number, min: number, max: number) {
-  //   return Math.max(min, Math.min(value, max))
-  // }
+      let group = [] as T[]
+      group = [...group, item]
+      let index = this.items.indexOf(item)
+      while (this.itemIsSelected(this.items[index + 1])) {
+        group = [...group, this.items[index + 1]]
+        index++
+      }
+
+      return [...items, group]
+    }, [] as Array<T[]>)
+  }
 
   /**
    * Constructor
@@ -115,11 +159,8 @@ export default class<T> {
       this.setSingleSelectedItem(item)
     }
 
-    this.lastSelectedItem = item
-    // console.log('Last selection is', item)
     if (!shiftKey) {
-      // console.log('Last non-shift selection is', item)
-      this.lastNonShiftSelectedItem = item
+      this.lastNonShiftClickedItem = item
     }
 
     return this.selectedItems
@@ -131,5 +172,9 @@ export default class<T> {
 
   public clearSelection() {
     this.selectedItems = []
+  }
+
+  public selectAll() {
+    this.selectedItems = [...this.items]
   }
 }

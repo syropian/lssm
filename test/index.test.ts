@@ -181,5 +181,60 @@ describe('list-selection-state', () => {
       lm.selectItem(14, shiftConfig)
       expect(lm.getSelectedItems()).toEqual([...range(10, 14), 18])
     })
+
+    test('Monkey test #3', () => {
+      const listFixture = range(0, 19)
+      const shiftConfig: Config = {
+        shiftKey: true,
+      }
+      const metaConfig: Config = {
+        metaKey: true,
+      }
+
+      const lm = new ListSelectionStateManager(listFixture)
+
+      lm.selectItem(4)
+      lm.selectItem(12, shiftConfig)
+      lm.selectItem(8, shiftConfig)
+      expect(lm.getSelectedItems()).toEqual(range(4, 8))
+
+      lm.clearSelection()
+
+      lm.selectItem(2)
+      lm.selectItem(18, shiftConfig)
+      lm.selectItem(16, metaConfig)
+      lm.selectItem(15, metaConfig)
+      lm.selectItem(12, metaConfig)
+      lm.selectItem(11, metaConfig)
+      lm.selectItem(6, shiftConfig)
+      expect(lm.getSelectedItems()).toEqual([...range(6, 13), 17, 18])
+
+      lm.clearSelection()
+
+      lm.selectItem(18)
+      lm.selectItem(2, shiftConfig)
+      lm.selectItem(4, metaConfig)
+      lm.selectItem(5, metaConfig)
+      lm.selectItem(8, metaConfig)
+      lm.selectItem(9, metaConfig)
+      lm.selectItem(14, shiftConfig)
+      expect(lm.getSelectedItems()).toEqual([2, 3, 6, 7, ...range(10, 14)])
+
+      lm.clearSelection()
+
+      lm.selectItem(10)
+      lm.selectItem(16, shiftConfig)
+      lm.selectItem(14, metaConfig)
+      lm.selectItem(4, shiftConfig)
+      expect(lm.getSelectedItems()).toEqual(range(4, 15))
+
+      lm.clearSelection()
+
+      lm.selectItem(8)
+      lm.selectItem(2, shiftConfig)
+      lm.selectItem(6, metaConfig)
+      lm.selectItem(14, shiftConfig)
+      expect(lm.getSelectedItems()).toEqual([...range(2, 5), ...range(7, 14)])
+    })
   })
 })
