@@ -1,25 +1,17 @@
-# vite-vanilla-ts-starter
+# list-selection-state [![Tests](https://github.com/syropian/list-selection-state/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/syropian/list-selection-state/actions/workflows/test.yml)
 
-> A starter template for building vanilla TypeScript libraries with Vite, Vitest, ESLint, and Prettier.
-
----
-
-## Example Readme
-
-# my-lib [![Tests](https://github.com/syropian/vite-vanilla-ts-starter/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/syropian/vite-vanilla-ts-starter/actions/workflows/test.yml)
-
-> A description of your library here.
+> An opinionated way to manage the state of a list of multi-selectable items
 
 ## Install
 
 ```
-$ npm install my-lib --save
+$ npm install list-selection-state --save
 ```
 
 **or** include it in a `<script>` tag, hosted by [unpkg](https://unpkg.com).
 
 ```js
-<script src="https://unpkg.com/my-lib/dist/my-lib.iife.js" />
+<script src="https://unpkg.com/list-selection-state/dist/my-lib.iife.js" />
 ```
 
 ## Usage
