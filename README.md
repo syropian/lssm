@@ -1,6 +1,6 @@
 # list-selection-state [![Tests](https://github.com/syropian/list-selection-state/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/syropian/list-selection-state/actions/workflows/test.yml)
 
-> An opinionated way to manage the state of a list of multi-selectable items
+> Manage list selection state with a macOS-like user experience
 
 ## Install
 
