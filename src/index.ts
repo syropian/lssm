@@ -13,6 +13,7 @@ export default class<T> {
 
   private selectedItems = [] as T[]
 
+  private lastSelectedItem: T | null = null
   private lastNonShiftClickedItem: T | null = null
 
   private defaultConfig: Config = {
@@ -159,8 +160,74 @@ export default class<T> {
       this.setSingleSelectedItem(item)
     }
 
+    if (this.itemIsSelected(item)) {
+      this.lastSelectedItem = item
+    }
+
     if (!shiftKey) {
       this.lastNonShiftClickedItem = item
+    }
+
+    return this.selectedItems
+  }
+
+  public nextItem(config: Config = this.defaultConfig): T[] {
+    config = { ...this.defaultConfig, ...config }
+    const { shiftKey } = config
+
+    if (!this.selectedItems.length) {
+      this.selectedItems = [this.items[0]]
+    } else {
+      const selectedIndex = this.items.indexOf(this.lastSelectedItem as T)
+
+      if (selectedIndex < this.items.length - 1) {
+        const nextItem = this.items[selectedIndex + 1]
+
+        if (shiftKey) {
+          if (this.itemIsSelected(nextItem)) {
+            this.selectedItems = this.selectedItems.filter(
+              item => item !== this.lastSelectedItem
+            )
+          } else {
+            this.selectedItems = [...this.selectedItems, nextItem]
+            this.lastSelectedItem = nextItem
+          }
+        } else {
+          this.selectedItems = [nextItem]
+          this.lastSelectedItem = nextItem
+        }
+      }
+    }
+
+    return this.selectedItems
+  }
+
+  public previousItem(config: Config = this.defaultConfig): T[] {
+    config = { ...this.defaultConfig, ...config }
+    const { shiftKey } = config
+
+    if (!this.selectedItems.length) {
+      this.selectedItems = [this.items[this.items.length - 1]]
+    } else {
+      const selectedIndex = this.items.indexOf(this.lastSelectedItem as T)
+
+      if (selectedIndex > 0) {
+        const previousItem = this.items[selectedIndex - 1]
+
+        if (shiftKey) {
+          if (this.itemIsSelected(previousItem)) {
+            this.selectedItems = this.selectedItems.filter(
+              item => item !== this.lastSelectedItem
+            )
+          } else {
+            this.selectedItems = [...this.selectedItems, previousItem]
+            this.lastSelectedItem = previousItem
+          }
+        } else {
+          this.selectedItems = [previousItem]
+          this.lastSelectedItem = previousItem
+        }
+      }
     }
 
     return this.selectedItems

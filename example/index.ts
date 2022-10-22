@@ -37,4 +37,22 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   document.getElementById('app')?.appendChild(ul)
+
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return
+
+    e.preventDefault()
+
+    const config = {
+      shiftKey: e.shiftKey,
+    }
+
+    if (e.key === 'ArrowDown') {
+      lm.nextItem(config)
+    } else {
+      lm.previousItem(config)
+    }
+
+    setSelectedItems(lm.getSelectedItems())
+  })
 })
