@@ -1,17 +1,17 @@
-# list-selection-state [![Tests](https://github.com/syropian/list-selection-state/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/syropian/list-selection-state/actions/workflows/test.yml)
+# lssm [![Tests](https://github.com/syropian/lssm/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/syropian/lssm/actions/workflows/test.yml)
 
-> Manage list selection state with a macOS-like user experience
+> Opionated list selection state manager.
 
 ## Install
 
 ```
-$ npm install list-selection-state --save
+$ npm install lssm --save
 ```
 
 **or** include it in a `<script>` tag, hosted by [unpkg](https://unpkg.com).
 
 ```js
-<script src="https://unpkg.com/list-selection-state/dist/list-selection-state.iife.js" />
+<script src="https://unpkg.com/lssm/dist/lssm.iife.js" />
 ```
 
 ## Usage

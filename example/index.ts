@@ -1,4 +1,4 @@
-import ListSelectionStateManager, { Config } from '../src'
+import { ListSelectionStateManager, ModifierConfig } from '../src'
 
 document.addEventListener('DOMContentLoaded', () => {
   const items = Array.from({ length: 19 - 0 + 1 }, (_, i) => ({ value: 0 + i }))
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   for (let i = 0; i < 20; i++) {
     const li = document.createElement('li')
     li.addEventListener('click', e => {
-      const config: Config = {
+      const config: ModifierConfig = {
         shiftKey: e.shiftKey,
         metaKey: e.metaKey,
         ctrlKey: e.ctrlKey,

@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach } from 'vitest'
-import ListSelectionStateManager, { ModifierConfig } from '../src'
+import { ListSelectionStateManager, ModifierConfig } from '../src'
 
 const range = (start: number, end: number) =>
   Array.from({ length: end - start + 1 }, (_, i) => start + i)

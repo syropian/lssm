@@ -1,11 +1,10 @@
 export interface ModifierConfig {
-  altKey?: boolean
   ctrlKey?: boolean
   metaKey?: boolean
   shiftKey?: boolean
 }
 
-export default class<T> {
+export class ListSelectionStateManager<T> {
   /**
    * Private members
    */
