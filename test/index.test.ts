@@ -197,7 +197,7 @@ describe('list-selection-state', () => {
         expect(lm.getSelectedItems()).toEqual([0])
       })
 
-      test('When an single item is currently selected, it selects the next available item', () => {
+      test('When a single item is currently selected, it selects the next available item', () => {
         lm.selectItem(6)
         lm.nextItem()
         expect(lm.getSelectedItems()).toEqual([7])
@@ -208,29 +208,29 @@ describe('list-selection-state', () => {
         lm.nextItem()
         expect(lm.getSelectedItems()).toEqual([19])
       })
-    })
 
-    test('When there is multiple items currently selected, it selects the next item after the last selected item', () => {
-      lm.selectItem(4)
-      lm.selectItem(8, shiftConfig)
-      lm.nextItem()
-      expect(lm.getSelectedItems()).toEqual([9])
+      test('When there is multiple items currently selected, it selects the next item after the last selected item', () => {
+        lm.selectItem(4)
+        lm.selectItem(8, shiftConfig)
+        lm.nextItem()
+        expect(lm.getSelectedItems()).toEqual([9])
 
-      lm.clearSelection()
+        lm.clearSelection()
 
-      lm.selectItem(4)
-      lm.selectItem(8, shiftConfig)
-      lm.selectItem(6, metaConfig)
-      lm.nextItem()
-      expect(lm.getSelectedItems()).toEqual([9])
+        lm.selectItem(4)
+        lm.selectItem(8, shiftConfig)
+        lm.selectItem(6, metaConfig)
+        lm.nextItem()
+        expect(lm.getSelectedItems()).toEqual([9])
 
-      lm.clearSelection()
+        lm.clearSelection()
 
-      lm.selectItem(4)
-      lm.selectItem(8, shiftConfig)
-      lm.selectItem(12, metaConfig)
-      lm.nextItem()
-      expect(lm.getSelectedItems()).toEqual([13])
+        lm.selectItem(4)
+        lm.selectItem(8, shiftConfig)
+        lm.selectItem(12, metaConfig)
+        lm.nextItem()
+        expect(lm.getSelectedItems()).toEqual([13])
+      })
     })
 
     describe('Next adjacent selection', () => {
@@ -243,10 +243,45 @@ describe('list-selection-state', () => {
         lm.selectItem(4)
         lm.nextItem(shiftConfig)
         expect(lm.getSelectedItems()).toEqual([4, 5])
+
         lm.nextItem(shiftConfig)
         expect(lm.getSelectedItems()).toEqual([4, 5, 6])
+      })
 
-        lm.clearSelection()
+      test('When more than one item is selected, and the last selected index is less than the last non-shift clicked index, it should deselect the next item', () => {
+        lm.selectItem(14)
+        lm.selectItem(10, shiftConfig)
+        lm.selectItem(6, metaConfig)
+        lm.selectItem(2, shiftConfig)
+
+        lm.nextItem(shiftConfig)
+        expect(lm.getSelectedItems()).toEqual([
+          ...range(3, 6),
+          ...range(10, 14),
+        ])
+        lm.nextItem(shiftConfig)
+        expect(lm.getSelectedItems()).toEqual([
+          ...range(4, 6),
+          ...range(10, 14),
+        ])
+        lm.nextItem(shiftConfig)
+        expect(lm.getSelectedItems()).toEqual([5, 6, ...range(10, 14)])
+        lm.nextItem(shiftConfig)
+        expect(lm.getSelectedItems()).toEqual([6, ...range(10, 14)])
+      })
+
+      test('When more than one item is selected, and the last selected index is greater than, or equal to than the last non-shift clicked index, it should select the closest deselected item', () => {
+        lm.selectItem(12)
+        lm.selectItem(10, metaConfig)
+        lm.selectItem(8, shiftConfig)
+
+        lm.nextItem(shiftConfig)
+        lm.nextItem(shiftConfig)
+        lm.nextItem(shiftConfig)
+        expect(lm.getSelectedItems()).toEqual(range(10, 12))
+
+        lm.nextItem(shiftConfig)
+        expect(lm.getSelectedItems()).toEqual(range(10, 13))
       })
     })
 
@@ -290,6 +325,58 @@ describe('list-selection-state', () => {
         lm.selectItem(12, metaConfig)
         lm.previousItem()
         expect(lm.getSelectedItems()).toEqual([11])
+      })
+    })
+
+    describe('Previous adjacent selection', () => {
+      test('When no item is selected, it selects the last item', () => {
+        lm.previousItem(shiftConfig)
+        expect(lm.getSelectedItems()).toEqual([19])
+      })
+
+      test('When one or more items are selected, it toggles the next available item before the last selected item', () => {
+        lm.selectItem(4)
+        lm.previousItem(shiftConfig)
+        expect(lm.getSelectedItems()).toEqual([3, 4])
+
+        lm.previousItem(shiftConfig)
+        expect(lm.getSelectedItems()).toEqual(range(2, 4))
+      })
+
+      test('When more than one item is selected, and the last selected index is greater than or equal to the last non-shift clicked index, it should deselect the next item', () => {
+        lm.selectItem(2)
+        lm.selectItem(6, shiftConfig)
+        lm.selectItem(10, metaConfig)
+        lm.selectItem(14, shiftConfig)
+
+        lm.previousItem(shiftConfig)
+        expect(lm.getSelectedItems()).toEqual([
+          ...range(2, 6),
+          ...range(10, 13),
+        ])
+        lm.previousItem(shiftConfig)
+        expect(lm.getSelectedItems()).toEqual([
+          ...range(2, 6),
+          ...range(10, 12),
+        ])
+        lm.previousItem(shiftConfig)
+        expect(lm.getSelectedItems()).toEqual([...range(2, 6), 10, 11])
+        lm.previousItem(shiftConfig)
+        expect(lm.getSelectedItems()).toEqual([...range(2, 6), 10])
+      })
+
+      test('When more than one item is selected, and the last selected index is greater than, or equal to than the last non-shift clicked index, it should select the closest deselected item', () => {
+        lm.selectItem(8)
+        lm.selectItem(10, metaConfig)
+        lm.selectItem(12, shiftConfig)
+
+        lm.previousItem(shiftConfig)
+        lm.previousItem(shiftConfig)
+        lm.previousItem(shiftConfig)
+        expect(lm.getSelectedItems()).toEqual(range(8, 10))
+
+        lm.previousItem(shiftConfig)
+        expect(lm.getSelectedItems()).toEqual(range(7, 10))
       })
     })
   })

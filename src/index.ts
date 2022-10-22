@@ -147,7 +147,7 @@ export default class<T> {
   /**
    * Public functions
    */
-  public selectItem(item: T, config: Config = this.defaultConfig): T[] {
+  public selectItem(item: T, config: Config = this.defaultConfig): this {
     config = { ...this.defaultConfig, ...config }
     const { ctrlKey, shiftKey } = config
     const metaKey = config.metaKey || ctrlKey
@@ -168,10 +168,10 @@ export default class<T> {
       this.lastNonShiftClickedItem = item
     }
 
-    return this.selectedItems
+    return this
   }
 
-  public nextItem(config: Config = this.defaultConfig): T[] {
+  public nextItem(config: Config = this.defaultConfig): this {
     config = { ...this.defaultConfig, ...config }
     const { shiftKey } = config
 
@@ -181,13 +181,27 @@ export default class<T> {
       const selectedIndex = this.items.indexOf(this.lastSelectedItem as T)
 
       if (selectedIndex < this.items.length - 1) {
-        const nextItem = this.items[selectedIndex + 1]
+        let nextItem
+
+        if (
+          selectedIndex < this.items.indexOf(this.lastNonShiftClickedItem as T)
+        ) {
+          nextItem = this.items[selectedIndex + 1]
+        } else {
+          nextItem = this.items.find(item => {
+            return (
+              this.items.indexOf(item) > selectedIndex &&
+              !this.itemIsSelected(item)
+            )
+          }) as T
+        }
 
         if (shiftKey) {
           if (this.itemIsSelected(nextItem)) {
             this.selectedItems = this.selectedItems.filter(
               item => item !== this.lastSelectedItem
             )
+            this.lastSelectedItem = nextItem
           } else {
             this.selectedItems = [...this.selectedItems, nextItem]
             this.lastSelectedItem = nextItem
@@ -199,10 +213,10 @@ export default class<T> {
       }
     }
 
-    return this.selectedItems
+    return this
   }
 
-  public previousItem(config: Config = this.defaultConfig): T[] {
+  public previousItem(config: Config = this.defaultConfig): this {
     config = { ...this.defaultConfig, ...config }
     const { shiftKey } = config
 
@@ -212,13 +226,29 @@ export default class<T> {
       const selectedIndex = this.items.indexOf(this.lastSelectedItem as T)
 
       if (selectedIndex > 0) {
-        const previousItem = this.items[selectedIndex - 1]
+        let previousItem
+        if (
+          selectedIndex >= this.items.indexOf(this.lastNonShiftClickedItem as T)
+        ) {
+          previousItem = this.items[selectedIndex - 1]
+        } else {
+          previousItem = this.items
+            .slice()
+            .reverse()
+            .find(item => {
+              return (
+                this.items.indexOf(item) < selectedIndex &&
+                !this.itemIsSelected(item)
+              )
+            }) as T
+        }
 
         if (shiftKey) {
           if (this.itemIsSelected(previousItem)) {
             this.selectedItems = this.selectedItems.filter(
               item => item !== this.lastSelectedItem
             )
+            this.lastSelectedItem = previousItem
           } else {
             this.selectedItems = [...this.selectedItems, previousItem]
             this.lastSelectedItem = previousItem
@@ -230,18 +260,24 @@ export default class<T> {
       }
     }
 
-    return this.selectedItems
+    return this
   }
 
   public getSelectedItems() {
-    return this.selectedItems
+    return this.selectedItems.sort(
+      (a, b) => this.items.indexOf(a) - this.items.indexOf(b)
+    )
   }
 
-  public clearSelection() {
+  public clearSelection(): this {
     this.selectedItems = []
+
+    return this
   }
 
-  public selectAll() {
+  public selectAll(): this {
     this.selectedItems = [...this.items]
+
+    return this
   }
 }
