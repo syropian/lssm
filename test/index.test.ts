@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach } from 'vitest'
-import ListSelectionStateManager, { Config } from '../src'
+import ListSelectionStateManager, { ModifierConfig } from '../src'
 
 const range = (start: number, end: number) =>
   Array.from({ length: end - start + 1 }, (_, i) => start + i)
@@ -7,10 +7,10 @@ const range = (start: number, end: number) =>
 describe('list-selection-state', () => {
   const listFixture = range(0, 19)
   const lm = new ListSelectionStateManager(listFixture)
-  const shiftConfig: Config = {
+  const shiftConfig: ModifierConfig = {
     shiftKey: true,
   }
-  const metaConfig: Config = {
+  const metaConfig: ModifierConfig = {
     metaKey: true,
   }
 
@@ -377,6 +377,16 @@ describe('list-selection-state', () => {
 
         lm.previousItem(shiftConfig)
         expect(lm.getSelectedItems()).toEqual(range(7, 10))
+
+        lm.clearSelection()
+
+        lm.selectItem(6)
+        lm.selectItem(12, shiftConfig)
+        lm.selectItem(10, metaConfig)
+        lm.previousItem(shiftConfig)
+        lm.previousItem(shiftConfig)
+        lm.previousItem(shiftConfig)
+        expect(lm.getSelectedItems()).toEqual(range(5, 11))
       })
     })
   })

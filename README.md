@@ -11,7 +11,7 @@ $ npm install list-selection-state --save
 **or** include it in a `<script>` tag, hosted by [unpkg](https://unpkg.com).
 
 ```js
-<script src="https://unpkg.com/list-selection-state/dist/my-lib.iife.js" />
+<script src="https://unpkg.com/list-selection-state/dist/list-selection-state.iife.js" />
 ```
 
 ## Usage

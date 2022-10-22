@@ -1,4 +1,4 @@
-export interface Config {
+export interface ModifierConfig {
   altKey?: boolean
   ctrlKey?: boolean
   metaKey?: boolean
@@ -16,7 +16,7 @@ export default class<T> {
   private lastSelectedItem: T | null = null
   private lastNonShiftClickedItem: T | null = null
 
-  private defaultConfig: Config = {
+  private defaultConfig: ModifierConfig = {
     ctrlKey: false,
     metaKey: false,
     shiftKey: false,
@@ -147,7 +147,10 @@ export default class<T> {
   /**
    * Public functions
    */
-  public selectItem(item: T, config: Config = this.defaultConfig): this {
+  public selectItem(
+    item: T,
+    config: ModifierConfig = this.defaultConfig
+  ): this {
     config = { ...this.defaultConfig, ...config }
     const { ctrlKey, shiftKey } = config
     const metaKey = config.metaKey || ctrlKey
@@ -171,7 +174,7 @@ export default class<T> {
     return this
   }
 
-  public nextItem(config: Config = this.defaultConfig): this {
+  public nextItem(config: ModifierConfig = this.defaultConfig): this {
     config = { ...this.defaultConfig, ...config }
     const { shiftKey } = config
 
@@ -216,7 +219,7 @@ export default class<T> {
     return this
   }
 
-  public previousItem(config: Config = this.defaultConfig): this {
+  public previousItem(config: ModifierConfig = this.defaultConfig): this {
     config = { ...this.defaultConfig, ...config }
     const { shiftKey } = config
 
@@ -228,7 +231,7 @@ export default class<T> {
       if (selectedIndex > 0) {
         let previousItem
         if (
-          selectedIndex >= this.items.indexOf(this.lastNonShiftClickedItem as T)
+          selectedIndex > this.items.indexOf(this.lastNonShiftClickedItem as T)
         ) {
           previousItem = this.items[selectedIndex - 1]
         } else {
@@ -237,7 +240,7 @@ export default class<T> {
             .reverse()
             .find(item => {
               return (
-                this.items.indexOf(item) < selectedIndex &&
+                this.items.indexOf(item) <= selectedIndex &&
                 !this.itemIsSelected(item)
               )
             }) as T
