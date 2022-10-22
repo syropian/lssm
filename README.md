@@ -4,6 +4,8 @@
 
 ## ⚠️ This library is currently under development and is _not_ production-ready. Use at your own risk. ⚠️
 
+`lssm` is small library that provides a simple API for managing the selection state of a list of items. It allows you to easily build selectable list UIs that support complex multi-select rules that you would see in something like the macOS Finder. It was written in vanilla TypeScript, and can be freely used alongside your favourite JavaScript framework.
+
 ## Install
 
 ```
