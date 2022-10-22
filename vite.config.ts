@@ -3,6 +3,8 @@ import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 import packageJson from './package.json'
 
+const isProd = process.env.NODE_ENV === 'production'
+
 const getPackageName = () => {
   return packageJson.name
 }
@@ -20,7 +22,7 @@ const fileName = {
   iife: `${getPackageName()}.iife.js`,
 }
 
-export default defineConfig({
+const libConfig = defineConfig({
   base: './',
   build: {
     lib: {
@@ -36,3 +38,16 @@ export default defineConfig({
     }),
   ],
 })
+
+const exampleConfig = defineConfig({
+  base: './',
+  build: {
+    outDir: path.resolve(__dirname, 'dist/example'),
+    emptyOutDir: true,
+    rollupOptions: {
+      input: path.resolve(__dirname, 'index.html')
+    },
+  },
+})
+
+export default isProd ? libConfig : exampleConfig

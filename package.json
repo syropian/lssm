@@ -19,6 +19,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:demo": "vite build --mode demo",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint --ext .ts --ignore-path .gitignore ./src ./test --fix",
