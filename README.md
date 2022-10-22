@@ -2,6 +2,8 @@
 
 > Opionated list selection state manager.
 
+## ⚠️ This library is currently under development and is _not_ production-ready. Use at your own risk. ⚠️
+
 ## Install
 
 ```
@@ -16,22 +18,7 @@ $ npm install lssm --save
 
 ## Usage
 
-```ts
-import doSomething from 'my-lib'
-
-const x = 5
-doSomething(x) // result
-```
-
-## API
-
-### doSomething(number)
-
-#### count
-
-Type: `number`
-
-The number that you want to do something with.
+Usage instructions coming soon. See `/example/index.ts` and `/test/index.test.ts` for example usage.
 
 ## Development
 
