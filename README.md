@@ -9,7 +9,7 @@
 ## Install
 
 ```
-$ npm install lssm --save
+npm install lssm --save
 ```
 
 **or** include it in a `<script>` tag, hosted by [unpkg](https://unpkg.com).
