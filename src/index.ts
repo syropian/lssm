@@ -273,6 +273,10 @@ export class ListSelectionStateManager<T> {
     )
   }
 
+  public getSelectedIndices() {
+    return this.selectedItems.map(item => this.items.indexOf(item))
+  }
+
   public clearSelection(): this {
     this.selectedItems = []
 

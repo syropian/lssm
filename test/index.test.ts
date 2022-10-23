@@ -4,7 +4,7 @@ import { ListSelectionStateManager, ModifierConfig } from '../src'
 const range = (start: number, end: number) =>
   Array.from({ length: end - start + 1 }, (_, i) => start + i)
 
-describe('list-selection-state', () => {
+describe('lssm', () => {
   const listFixture = range(0, 19)
   const lm = new ListSelectionStateManager(listFixture)
   const shiftConfig: ModifierConfig = {
@@ -40,7 +40,6 @@ describe('list-selection-state', () => {
       lm.selectItem(6, metaConfig)
       lm.selectItem(9, metaConfig)
       lm.selectItem(5, metaConfig)
-
       expect(lm.getSelectedItems()).toEqual([6, 9]) //nice
     })
   })
@@ -193,7 +192,6 @@ describe('list-selection-state', () => {
     describe('Next selection', () => {
       test('When no item is selected, it selects the first item', () => {
         lm.nextItem()
-
         expect(lm.getSelectedItems()).toEqual([0])
       })
 
@@ -389,5 +387,25 @@ describe('list-selection-state', () => {
         expect(lm.getSelectedItems()).toEqual(range(5, 11))
       })
     })
+  })
+
+  test('Select all', () => {
+    lm.selectAll()
+    expect(lm.getSelectedItems()).toEqual(range(0, 19))
+  })
+
+  test('Clearing selection', () => {
+    lm.selectItem(1, metaConfig)
+    lm.selectItem(3, metaConfig)
+    lm.selectItem(5, metaConfig)
+    lm.clearSelection()
+    expect(lm.getSelectedItems()).toEqual([])
+  })
+
+  test('Selected indices', () => {
+    lm.selectItem(1, metaConfig)
+    lm.selectItem(3, metaConfig)
+    lm.selectItem(5, metaConfig)
+    expect(lm.getSelectedIndices()).toEqual([1, 3, 5])
   })
 })

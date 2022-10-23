@@ -20,18 +20,21 @@ $ npm install lssm --save
 
 ## Usage
 
-Usage instructions coming soon. See `/example/index.ts` and `/test/index.test.ts` for example usage.
+Usage instructions coming soon. See `/test/index.test.ts` for example usage.
 
 ## Development
 
 ```bash
 # To run the tests
-$ pnpm test
+pnpm test
 # or
-$ pnpm run test:watch
+pnpm run test:watch
+
+# To run the example
+pnpm run dev
 
 # To publish the dist files
-$ pnpm run build
+pnpm run build
 ```
 
 ## License
