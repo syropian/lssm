@@ -211,6 +211,7 @@ export class ListSelectionStateManager<T> {
         } else {
           this.selectedItems = [nextItem]
           this.lastSelectedItem = nextItem
+          this.lastNonShiftClickedItem = nextItem
         }
       }
     }
@@ -258,6 +259,7 @@ export class ListSelectionStateManager<T> {
         } else {
           this.selectedItems = [previousItem]
           this.lastSelectedItem = previousItem
+          this.lastNonShiftClickedItem = previousItem
         }
       }
     }
