@@ -5,7 +5,7 @@
       v-for="item in items"
       :key="item.value"
       @click="selectItem(item, $event)"
-      :class="{ selected: itemIsSelected(item) }"
+      :class="{ 'bg-blue-500 text-white': itemIsSelected(item) }"
     >
       {{ item.value }}
     </li>
@@ -64,40 +64,3 @@ onMounted(() => {
   })
 })
 </script>
-
-<style>
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
-    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
-  width: 100vw;
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-}
-
-ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  width: 225px;
-  border: 1px solid #ddd;
-}
-
-ul li {
-  display: flex;
-  align-items: center;
-  padding: 8px 10px;
-  font-size: 14px;
-  user-select: none;
-}
-
-ul li:nth-child(even) {
-  background-color: #f4f5f5;
-}
-
-ul li.selected {
-  background-color: #0062e1;
-  color: #fff;
-}
-</style>
