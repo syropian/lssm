@@ -26,6 +26,7 @@
     "format": "prettier ./src ./test ./example -w -u"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.7",
     "@types/node": "^18.7.23",
     "@typescript-eslint/eslint-plugin": "^5.38.1",
     "@typescript-eslint/parser": "^5.38.1",
