@@ -1,5 +1,6 @@
 import path from 'path'
 import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
 import dts from 'vite-plugin-dts'
 import packageJson from './package.json'
 
@@ -41,6 +42,7 @@ const libConfig = defineConfig({
 
 const exampleConfig = defineConfig({
   base: './',
+  plugins: [vue()],
   build: {
     outDir: path.resolve(__dirname, 'dist/example'),
     emptyOutDir: true,
