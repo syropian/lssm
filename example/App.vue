@@ -134,8 +134,10 @@ type Item = {
   value: number
 }
 
+const TOTAL_ITEMS = 10
+
 const items = ref(
-  Array.from({ length: 19 - 0 + 1 }, (_, i) => ({ value: 0 + i }))
+  Array.from({ length: TOTAL_ITEMS }, (_, i) => ({ value: 0 + i }))
 ) as Ref<Item[]>
 const selectedItems = ref<Item[]>([])
 
