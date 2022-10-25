@@ -281,6 +281,34 @@ describe('lssm', () => {
         lm.nextItem(shiftConfig)
         expect(lm.getSelectedItems()).toEqual(range(10, 13))
       })
+
+      test('When there are multiple groups of selected items', () => {
+        lm.selectItem(2)
+        lm.selectItem(6, shiftConfig)
+        lm.selectItem(4, metaConfig)
+
+        lm.previousItem(shiftConfig)
+        lm.previousItem(shiftConfig)
+
+        lm.nextItem(shiftConfig)
+        lm.nextItem(shiftConfig)
+        lm.nextItem(shiftConfig)
+        expect(lm.getSelectedItems()).toEqual([5])
+
+        lm.clearSelection()
+
+        lm.selectItem(2)
+        lm.selectItem(8, shiftConfig)
+        lm.selectItem(6, metaConfig)
+        lm.selectItem(4, metaConfig)
+
+        lm.previousItem(shiftConfig)
+        lm.previousItem(shiftConfig)
+
+        lm.nextItem(shiftConfig)
+        lm.nextItem(shiftConfig)
+        expect(lm.getSelectedItems()).toEqual([2, 3, 7])
+      })
     })
 
     describe('Previous selection', () => {
@@ -385,6 +413,20 @@ describe('lssm', () => {
         lm.previousItem(shiftConfig)
         lm.previousItem(shiftConfig)
         expect(lm.getSelectedItems()).toEqual(range(5, 11))
+      })
+
+      test('When there are multiple groups of selected items', () => {
+        lm.selectItem(8)
+        lm.selectItem(2, shiftConfig)
+        lm.selectItem(4, metaConfig)
+        lm.selectItem(6, metaConfig)
+
+        lm.nextItem(shiftConfig)
+        lm.nextItem(shiftConfig)
+
+        lm.previousItem(shiftConfig)
+        lm.previousItem(shiftConfig)
+        expect(lm.getSelectedItems()).toEqual([3, 7, 8])
       })
     })
   })

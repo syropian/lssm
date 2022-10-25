@@ -70,7 +70,7 @@
         </button>
       </div>
       <ul
-        class="rounded-lg border-4 border-gray-200 overflow-hidden mt-5"
+        class="rounded-lg border-4 border-gray-200 overflow-hidden mt-5 max-h-[368px] overflow-y-auto"
         role="listbox"
         aria-multiselectable="true"
         aria-label="Select one or more items"
@@ -128,7 +128,7 @@ type Item = {
 }
 
 const items = ref(
-  Array.from({ length: 9 - 0 + 1 }, (_, i) => ({ value: 0 + i }))
+  Array.from({ length: 19 - 0 + 1 }, (_, i) => ({ value: 0 + i }))
 ) as Ref<Item[]>
 const selectedItems = ref<Item[]>([])
 
