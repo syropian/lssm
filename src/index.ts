@@ -178,52 +178,7 @@ export class ListSelectionStateManager<T> {
 
     return this
   }
-  // public nextItem(config: ModifierConfig = this.defaultConfig): this {
-  //   config = { ...this.defaultConfig, ...config }
-  //   const { shiftKey } = config
-  //   let targetItem: T
 
-  //   if (!this.selectedItems.length) {
-  //     targetItem = this.items[0]
-
-  //     this.setSelectedItems([targetItem])
-  //     this.lastSelectedItem = targetItem
-  //     this.lastNonShiftClickedItem = targetItem
-
-  //     return this
-  //   }
-
-  //   const lastSelectedIndex = this.items.indexOf(this.lastSelectedItem as T)
-  //   const lastNonShiftIndex = this.items.indexOf(
-  //     this.lastNonShiftClickedItem as T
-  //   )
-
-  //   if (lastSelectedIndex >= this.items.length - 1) return this
-
-  //   targetItem = this.items[lastSelectedIndex + 1] as T
-
-  //   if (shiftKey) {
-  //     // TODO: Are groups important here?
-  //     if (lastSelectedIndex < lastNonShiftIndex) {
-  //       targetItem = this.lastSelectedItem as T
-  //       this.removeItemFromSelection(targetItem)
-  //       this.lastSelectedItem = this.getSelectedItems().find(
-  //         item => this.items.indexOf(item) > lastSelectedIndex
-  //       ) as T
-  //     } else {
-  //       this.appendItemsToSelection(targetItem)
-  //       const group = this.getItemGroup(targetItem)
-  //       this.lastSelectedItem = group[group.length - 1]
-  //     }
-
-  //     return this
-  //   }
-
-  //   this.setSelectedItems([targetItem])
-  //   this.lastSelectedItem = targetItem
-
-  //   return this
-  // }
   public nextItem(config: ModifierConfig = this.defaultConfig): this {
     config = { ...this.defaultConfig, ...config }
     const { shiftKey } = config
@@ -244,9 +199,8 @@ export class ListSelectionStateManager<T> {
       this.lastNonShiftClickedItem as T
     )
 
-    if (lastSelectedIndex >= this.items.length - 1) return this
-
     targetItem = this.items[lastSelectedIndex + 1] as T
+
     if (shiftKey) {
       if (lastSelectedIndex >= lastNonShiftIndex) {
         this.appendItemsToSelection(targetItem)
@@ -262,10 +216,15 @@ export class ListSelectionStateManager<T> {
       }
 
       return this
-    }
+    } else {
+      if (lastSelectedIndex === this.items.length - 1) {
+        this.setSelectedItems([this.items[this.items.length - 1]])
+      } else {
+        this.setSelectedItems([targetItem])
+      }
 
-    this.setSelectedItems([targetItem])
-    this.lastSelectedItem = targetItem
+      this.lastSelectedItem = targetItem
+    }
 
     return this
   }
@@ -290,9 +249,8 @@ export class ListSelectionStateManager<T> {
       this.lastNonShiftClickedItem as T
     )
 
-    if (lastSelectedIndex < 1) return this
-
     targetItem = this.items[lastSelectedIndex - 1] as T
+
     if (shiftKey) {
       if (lastSelectedIndex <= lastNonShiftIndex) {
         this.appendItemsToSelection(targetItem)
@@ -308,10 +266,15 @@ export class ListSelectionStateManager<T> {
       }
 
       return this
-    }
+    } else {
+      if (lastSelectedIndex < 1) {
+        this.setSelectedItems([this.items[0]])
+      } else {
+        this.setSelectedItems([targetItem])
+      }
 
-    this.setSelectedItems([targetItem])
-    this.lastSelectedItem = targetItem
+      this.lastSelectedItem = targetItem
+    }
 
     return this
   }
