@@ -4,12 +4,14 @@
   >
     <div class="w-full sm:w-1/2">
       <div class="flex items-center justify-between">
-        <h1 class="text-3xl font-semibold text-gray-700">lssm</h1>
+        <h1 class="text-3xl font-semibold text-gray-700 dark:text-gray-300">
+          lssm
+        </h1>
         <a
           href="https://github.com/syropian/lssm"
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-block text-gray-700 transition-colors hover:text-blue-500"
+          class="inline-block text-gray-700 dark:text-gray-300 transition-colors hover:text-blue-500"
           aria-label="GitHub"
           ><svg
             viewBox="0 0 24 24"
@@ -27,11 +29,13 @@
           </svg>
         </a>
       </div>
-      <h2 class="text-gray-500 text-lg mt-2">
+      <h2 class="text-gray-500 dark:text-gray-400 text-lg mt-2">
         An opinionated list selection state manager
       </h2>
 
-      <div class="mt-4 pt-4 border-t border-gray-100 leading-loose prose">
+      <div
+        class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 leading-loose prose dark:prose-invert"
+      >
         <ul>
           <li>Click an item to select it</li>
           <li>
@@ -39,13 +43,14 @@
             <kbd class="text-xs">cmd</kbd> click an item to toggle it
           </li>
           <li>
-            <kbd class="text-xs">shift</kbd> or
-            <kbd class="text-xs">cmd</kbd> click an item to select the items as
-            a range
+            <kbd class="text-xs">shift</kbd> click an item to select the items
+            as a range
           </li>
-          <li>Use the arrow keys to select the next or previous item</li>
           <li>
-            Use <kbd class="text-xs">shift</kbd> plus the arrow keys to
+            Use the up/down arrow keys to select the next or previous item
+          </li>
+          <li>
+            Use <kbd class="text-xs">shift</kbd> plus the up/down arrow keys to
             multi-select adjacent items
           </li>
         </ul>
@@ -55,7 +60,7 @@
       <div class="flex items-center gap-x-4 mt-5">
         <button
           type="button"
-          class="inline-flex items-center rounded border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 active:bg-gray-100 relative active:top-px active:shadow-none"
+          class="inline-flex items-center rounded border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 active:bg-gray-100 relative active:top-px active:shadow-none dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700 dark:active:bg-gray-600"
           @click="selectAll"
         >
           Select all
@@ -63,14 +68,14 @@
 
         <button
           type="button"
-          class="inline-flex items-center rounded border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 active:bg-gray-100 relative active:top-px active:shadow-"
+          class="inline-flex items-center rounded border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 active:bg-gray-100 relative active:top-px active:shadow-none dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700 dark:active:bg-gray-600"
           @click="selectNone"
         >
           Clear selection
         </button>
       </div>
       <ul
-        class="rounded-lg border-4 border-gray-200 overflow-hidden mt-5 max-h-[368px] overflow-y-auto"
+        class="rounded-lg border-4 border-gray-200 dark:border-gray-700 overflow-hidden mt-5 max-h-[368px] overflow-y-auto"
         role="listbox"
         aria-multiselectable="true"
         aria-label="Select one or more items"
@@ -82,7 +87,8 @@
           class="px-2 py-2 cursor-pointer text-sm select-none flex items-center gap-x-1"
           :class="{
             'bg-blue-500 even:bg-blue-500 text-white': itemIsSelected(item),
-            'even:bg-gray-100 text-gray-800': !itemIsSelected(item),
+            'even:bg-gray-100 text-gray-800 dark:even:bg-gray-800 dark:text-gray-400':
+              !itemIsSelected(item),
           }"
           role="option"
           :aria-selected="itemIsSelected(item) || undefined"
@@ -92,6 +98,7 @@
             viewBox="0 0 20 20"
             fill="currentColor"
             class="w-5 h-5"
+            :class="itemIsSelected(item) ? 'opacity-75' : 'opacity-50'"
             aria-hidden="true"
           >
             <path
@@ -105,9 +112,9 @@
     </div>
   </div>
   <footer
-    class="sm:max-w-screen-md w-full px-4 sm:px-0 mx-auto mt-12 sm:mt-20 text-sm text-gray-700 mb-5"
+    class="sm:max-w-screen-md w-full px-4 sm:px-0 mx-auto mt-12 sm:mt-20 text-sm text-gray-700 dark:text-gray-400 mb-5"
   >
-    <div class="border-t border-gray-200 pt-4">
+    <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
       &copy; {{ new Date().getFullYear() }}
       <a
         href="https://syropia.net"
@@ -186,5 +193,11 @@ onMounted(() => {
 <style lang="postcss">
 kbd {
   @apply bg-gray-100 rounded border-gray-300 shadow border p-1 text-xs;
+}
+
+@media (prefers-color-scheme: dark) {
+  kbd {
+    @apply bg-gray-700 border-gray-600 text-gray-300;
+  }
 }
 </style>
