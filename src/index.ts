@@ -25,13 +25,13 @@ export class ListSelectionStateManager<T> {
    * Private functions
    */
 
-  private setSelectedItemRange(item: T) {
+  private setRange(item: T) {
     if (!this.selectedItems.length) {
       const index = this.items.indexOf(item)
 
       if (index < 0) return
 
-      this.setSelectedItems(this.items.slice(0, index + 1))
+      this.set(this.items.slice(0, index + 1))
     } else {
       const lastNonShiftItem = this.lastNonShiftClickedItem as T
       const lastNonShiftIndex = this.items.indexOf(lastNonShiftItem)
@@ -41,13 +41,13 @@ export class ListSelectionStateManager<T> {
       let startIndex = 0
       let endIndex = 0
 
-      if (this.itemIsSelected(lastNonShiftItem)) {
+      if (this.isSelected(lastNonShiftItem)) {
         startIndex = Math.min(lastNonShiftIndex, newIndex)
         endIndex = Math.max(lastNonShiftIndex, newIndex)
       } else {
         // THINK IN GROUPS!!!
 
-        const groups = this.itemsAsGroups()
+        const groups = this.asGroups()
         const selectedGroup = groups.find(group =>
           group.includes(this.items[newIndex])
         )
@@ -83,51 +83,48 @@ export class ListSelectionStateManager<T> {
       }
 
       const primaryGroup = this.items.slice(startIndex, endIndex + 1)
-      const filteredGroup = this.itemsAsGroups().filter(group => {
+      const filteredGroup = this.asGroups().filter(group => {
         return !primaryGroup.some(item => group.includes(item))
       })
 
-      this.setSelectedItems([
-        ...new Set([...primaryGroup, ...filteredGroup.flat()]),
-      ])
+      this.set([...new Set([...primaryGroup, ...filteredGroup.flat()])])
     }
   }
 
-  private setSingleSelectedItem(item: T) {
+  private setSingle(item: T) {
     this.selectedItems = [item]
   }
 
-  private toggleItem(item: T) {
-    if (this.itemIsSelected(item)) {
-      this.removeItemFromSelection(item)
+  private toggle(item: T) {
+    if (this.isSelected(item)) {
+      this.remove(item)
     } else {
-      this.appendItemsToSelection(item)
+      this.append(item)
     }
   }
 
-  private removeItemFromSelection(item: T) {
-    this.setSelectedItems(this.selectedItems.filter(i => i !== item))
+  private remove(item: T) {
+    this.set(this.selectedItems.filter(i => i !== item))
   }
 
-  private appendItemsToSelection(item: T) {
-    if (!this.itemIsSelected(item)) {
-      this.setSelectedItems([...this.selectedItems, item])
+  private append(item: T) {
+    if (!this.isSelected(item)) {
+      this.set([...this.selectedItems, item])
     }
   }
 
-  private itemIsSelected(item: T) {
+  private isSelected(item: T) {
     return this.selectedItems.includes(item)
   }
 
-  private itemsAsGroups(): Array<T[]> {
+  private asGroups(): Array<T[]> {
     return this.items.reduce((items, item) => {
-      if (!this.itemIsSelected(item) || items.flat().includes(item))
-        return items
+      if (!this.isSelected(item) || items.flat().includes(item)) return items
 
       let group = [] as T[]
       group = [...group, item]
       let index = this.items.indexOf(item)
-      while (this.itemIsSelected(this.items[index + 1])) {
+      while (this.isSelected(this.items[index + 1])) {
         group = [...group, this.items[index + 1]]
         index++
       }
@@ -136,10 +133,10 @@ export class ListSelectionStateManager<T> {
     }, [] as Array<T[]>)
   }
 
-  private getItemGroup(item: T) {
-    if (!this.itemIsSelected) return []
+  private getGroup(item: T) {
+    if (!this.isSelected) return []
 
-    return this.itemsAsGroups().find(group => group.includes(item)) ?? []
+    return this.asGroups().find(group => group.includes(item)) ?? []
   }
 
   /**
@@ -152,23 +149,20 @@ export class ListSelectionStateManager<T> {
   /**
    * Public functions
    */
-  public selectItem(
-    item: T,
-    config: ModifierConfig = this.defaultConfig
-  ): this {
+  public select(item: T, config: ModifierConfig = this.defaultConfig): this {
     config = { ...this.defaultConfig, ...config }
     const { ctrlKey, shiftKey } = config
     const metaKey = config.metaKey || ctrlKey
 
     if (metaKey) {
-      this.toggleItem(item)
+      this.toggle(item)
     } else if (shiftKey && !metaKey) {
-      this.setSelectedItemRange(item)
+      this.setRange(item)
     } else {
-      this.setSingleSelectedItem(item)
+      this.setSingle(item)
     }
 
-    if (this.itemIsSelected(item)) {
+    if (this.isSelected(item)) {
       this.lastSelectedItem = item
     }
 
@@ -179,7 +173,7 @@ export class ListSelectionStateManager<T> {
     return this
   }
 
-  public nextItem(config: ModifierConfig = this.defaultConfig): this {
+  public next(config: ModifierConfig = this.defaultConfig): this {
     config = { ...this.defaultConfig, ...config }
     const { shiftKey } = config
     let targetItem: T
@@ -187,7 +181,7 @@ export class ListSelectionStateManager<T> {
     if (!this.selectedItems.length) {
       targetItem = this.items[0]
 
-      this.setSelectedItems([targetItem])
+      this.set([targetItem])
       this.lastSelectedItem = targetItem
       this.lastNonShiftClickedItem = targetItem
 
@@ -203,14 +197,14 @@ export class ListSelectionStateManager<T> {
 
     if (shiftKey) {
       if (lastSelectedIndex >= lastNonShiftIndex) {
-        this.appendItemsToSelection(targetItem)
-        const group = this.getItemGroup(targetItem)
+        this.append(targetItem)
+        const group = this.getGroup(targetItem)
         this.lastSelectedItem = group[group.length - 1]
       } else {
         targetItem = this.lastSelectedItem as T
-        const group = this.getItemGroup(targetItem)
+        const group = this.getGroup(targetItem)
 
-        this.removeItemFromSelection(targetItem)
+        this.remove(targetItem)
         this.lastSelectedItem = group.length === 1 ? group[0] : group[1]
         this.lastNonShiftClickedItem = group[group.length - 1]
       }
@@ -218,9 +212,9 @@ export class ListSelectionStateManager<T> {
       return this
     } else {
       if (lastSelectedIndex === this.items.length - 1) {
-        this.setSelectedItems([this.items[this.items.length - 1]])
+        this.set([this.items[this.items.length - 1]])
       } else {
-        this.setSelectedItems([targetItem])
+        this.set([targetItem])
       }
 
       this.lastSelectedItem = targetItem
@@ -229,7 +223,7 @@ export class ListSelectionStateManager<T> {
     return this
   }
 
-  public previousItem(config: ModifierConfig = this.defaultConfig): this {
+  public previous(config: ModifierConfig = this.defaultConfig): this {
     config = { ...this.defaultConfig, ...config }
     const { shiftKey } = config
     let targetItem: T
@@ -237,7 +231,7 @@ export class ListSelectionStateManager<T> {
     if (!this.selectedItems.length) {
       targetItem = this.items[this.items.length - 1]
 
-      this.setSelectedItems([targetItem])
+      this.set([targetItem])
       this.lastSelectedItem = targetItem
       this.lastNonShiftClickedItem = targetItem
 
@@ -253,14 +247,14 @@ export class ListSelectionStateManager<T> {
 
     if (shiftKey) {
       if (lastSelectedIndex <= lastNonShiftIndex) {
-        this.appendItemsToSelection(targetItem)
-        const group = this.getItemGroup(targetItem)
+        this.append(targetItem)
+        const group = this.getGroup(targetItem)
         this.lastSelectedItem = group[0]
       } else {
         targetItem = this.lastSelectedItem as T
-        const group = this.getItemGroup(targetItem)
+        const group = this.getGroup(targetItem)
 
-        this.removeItemFromSelection(targetItem)
+        this.remove(targetItem)
         this.lastNonShiftClickedItem = group[0]
         this.lastSelectedItem = group[Math.max(0, group.length - 2)]
       }
@@ -268,9 +262,9 @@ export class ListSelectionStateManager<T> {
       return this
     } else {
       if (lastSelectedIndex < 1) {
-        this.setSelectedItems([this.items[0]])
+        this.set([this.items[0]])
       } else {
-        this.setSelectedItems([targetItem])
+        this.set([targetItem])
       }
 
       this.lastSelectedItem = targetItem
@@ -279,17 +273,17 @@ export class ListSelectionStateManager<T> {
     return this
   }
 
-  public getSelectedItems() {
+  public get() {
     return this.selectedItems.sort(
       (a, b) => this.items.indexOf(a) - this.items.indexOf(b)
     )
   }
 
-  public getSelectedIndices() {
+  public getIndices() {
     return this.selectedItems.map(item => this.items.indexOf(item))
   }
 
-  public setSelectedItems(items: T[]): this {
+  public set(items: T[]): this {
     this.selectedItems = items.sort(
       (a, b) => this.items.indexOf(a) - this.items.indexOf(b)
     )
@@ -302,14 +296,14 @@ export class ListSelectionStateManager<T> {
     return this
   }
 
-  public clearSelection(): this {
-    this.setSelectedItems([])
+  public clear(): this {
+    this.set([])
 
     return this
   }
 
   public selectAll(): this {
-    this.setSelectedItems([...this.items])
+    this.set([...this.items])
 
     return this
   }

@@ -146,13 +146,13 @@ const lssm = new ListSelectionStateManager(items.value)
 const selectItem = (item: Item, e: MouseEvent) => {
   const { ctrlKey, metaKey, shiftKey } = e
 
-  lssm.selectItem(item, {
+  lssm.select(item, {
     ctrlKey,
     metaKey,
     shiftKey,
   })
 
-  selectedItems.value = lssm.getSelectedItems()
+  selectedItems.value = lssm.get()
 }
 
 const itemIsSelected = (item: Item) => {
@@ -163,12 +163,12 @@ const itemIsSelected = (item: Item) => {
 
 const selectAll = () => {
   lssm.selectAll()
-  selectedItems.value = lssm.getSelectedItems()
+  selectedItems.value = lssm.get()
 }
 
 const selectNone = () => {
-  lssm.clearSelection()
-  selectedItems.value = lssm.getSelectedItems()
+  lssm.clear()
+  selectedItems.value = lssm.get()
 }
 
 onMounted(() => {
@@ -182,12 +182,12 @@ onMounted(() => {
     }
 
     if (e.key === 'ArrowDown') {
-      lssm.nextItem(config)
+      lssm.next(config)
     } else {
-      lssm.previousItem(config)
+      lssm.previous(config)
     }
 
-    selectedItems.value = lssm.getSelectedItems()
+    selectedItems.value = lssm.get()
   })
 })
 </script>
