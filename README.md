@@ -117,11 +117,37 @@ console.log(listManager.get()) // [1, 2, 3, 4, 8]
 
 Similar to `get()` but returns the indices of the selected items instead of the items themselves.
 
-TODO
+**Example**
+
+```ts
+const items = [
+  { id: 1, name: 'Item 1' },
+  { id: 2, name: 'Item 2' },
+  { id: 3, name: 'Item 3' },
+  { id: 4, name: 'Item 4' },
+  { id: 5, name: 'Item 5' },
+]
+
+const listManager = new Lssm(items)
+listManager.select(1).select(3, { shiftKey: true }).select(5, { metaKey: true })
+
+console.log(listManager.getIndices()) // [0, 1, 2, 5]
+```
 
 #### `set(items: T[]): this`
 
 Allows you to manually set the selected items in the list.
+
+**Example**
+
+```ts
+const items = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+const listManager = new Lssm(items)
+
+listManager.set([1, 5, 6, 7])
+
+console.log(listManager.get()) // [1, 5, 6, 7]
+```
 
 #### `selectAll(): this`
 

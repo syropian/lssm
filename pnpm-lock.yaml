@@ -31,7 +31,7 @@ devDependencies:
   eslint-plugin-prettier: 4.2.1_cfn5x6ujhhgzv3423d6k7r2zzm
   postcss: 8.4.18
   prettier: 2.7.1
-  tailwindcss: 3.2.1
+  tailwindcss: 3.2.1_postcss@8.4.18
   typescript: 4.8.4
   vite: 3.1.4
   vite-plugin-dts: 1.6.4_vite@3.1.4
@@ -228,7 +228,7 @@ packages:
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       postcss-selector-parser: 6.0.10
-      tailwindcss: 3.2.1
+      tailwindcss: 3.2.1_postcss@8.4.18
     dev: true
 
   /@ts-morph/common/0.17.0:
@@ -1920,10 +1920,12 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
-  /tailwindcss/3.2.1:
+  /tailwindcss/3.2.1_postcss@8.4.18:
     resolution: {integrity: sha512-Uw+GVSxp5CM48krnjHObqoOwlCt5Qo6nw1jlCRwfGy68dSYb/LwS9ZFidYGRiM+w6rMawkZiu1mEMAsHYAfoLg==}
     engines: {node: '>=12.13.0'}
     hasBin: true
+    peerDependencies:
+      postcss: ^8.0.9
     dependencies:
       arg: 5.0.2
       chokidar: 3.5.3
