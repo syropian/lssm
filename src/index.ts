@@ -10,10 +10,10 @@ export class ListSelectionStateManager<T> {
    */
   private items = [] as T[]
 
-  private selectedItems = [] as T[]
+  private selected = [] as T[]
 
-  private lastSelectedItem: T | null = null
-  private lastNonShiftClickedItem: T | null = null
+  private lastSelected: T | null = null
+  private lastNonShiftToggled: T | null = null
 
   private defaultConfig: ModifierConfig = {
     ctrlKey: false,
@@ -26,14 +26,14 @@ export class ListSelectionStateManager<T> {
    */
 
   private setRange(item: T) {
-    if (!this.selectedItems.length) {
+    if (!this.selected.length) {
       const index = this.items.indexOf(item)
 
       if (index < 0) return
 
       this.set(this.items.slice(0, index + 1))
     } else {
-      const lastNonShiftItem = this.lastNonShiftClickedItem as T
+      const lastNonShiftItem = this.lastNonShiftToggled as T
       const lastNonShiftIndex = this.items.indexOf(lastNonShiftItem)
 
       const newIndex = this.items.indexOf(item)
@@ -92,7 +92,7 @@ export class ListSelectionStateManager<T> {
   }
 
   private setSingle(item: T) {
-    this.selectedItems = [item]
+    this.selected = [item]
   }
 
   private toggle(item: T) {
@@ -104,17 +104,17 @@ export class ListSelectionStateManager<T> {
   }
 
   private remove(item: T) {
-    this.set(this.selectedItems.filter(i => i !== item))
+    this.set(this.selected.filter(i => i !== item))
   }
 
   private append(item: T) {
     if (!this.isSelected(item)) {
-      this.set([...this.selectedItems, item])
+      this.set([...this.selected, item])
     }
   }
 
   private isSelected(item: T) {
-    return this.selectedItems.includes(item)
+    return this.selected.includes(item)
   }
 
   private asGroups(): Array<T[]> {
@@ -163,11 +163,11 @@ export class ListSelectionStateManager<T> {
     }
 
     if (this.isSelected(item)) {
-      this.lastSelectedItem = item
+      this.lastSelected = item
     }
 
     if (!shiftKey) {
-      this.lastNonShiftClickedItem = item
+      this.lastNonShiftToggled = item
     }
 
     return this
@@ -178,20 +178,18 @@ export class ListSelectionStateManager<T> {
     const { shiftKey } = config
     let targetItem: T
 
-    if (!this.selectedItems.length) {
+    if (!this.selected.length) {
       targetItem = this.items[0]
 
       this.set([targetItem])
-      this.lastSelectedItem = targetItem
-      this.lastNonShiftClickedItem = targetItem
+      this.lastSelected = targetItem
+      this.lastNonShiftToggled = targetItem
 
       return this
     }
 
-    const lastSelectedIndex = this.items.indexOf(this.lastSelectedItem as T)
-    const lastNonShiftIndex = this.items.indexOf(
-      this.lastNonShiftClickedItem as T
-    )
+    const lastSelectedIndex = this.items.indexOf(this.lastSelected as T)
+    const lastNonShiftIndex = this.items.indexOf(this.lastNonShiftToggled as T)
 
     targetItem = this.items[lastSelectedIndex + 1] as T
 
@@ -199,14 +197,14 @@ export class ListSelectionStateManager<T> {
       if (lastSelectedIndex >= lastNonShiftIndex) {
         this.append(targetItem)
         const group = this.getGroup(targetItem)
-        this.lastSelectedItem = group[group.length - 1]
+        this.lastSelected = group[group.length - 1]
       } else {
-        targetItem = this.lastSelectedItem as T
+        targetItem = this.lastSelected as T
         const group = this.getGroup(targetItem)
 
         this.remove(targetItem)
-        this.lastSelectedItem = group.length === 1 ? group[0] : group[1]
-        this.lastNonShiftClickedItem = group[group.length - 1]
+        this.lastSelected = group.length === 1 ? group[0] : group[1]
+        this.lastNonShiftToggled = group[group.length - 1]
       }
 
       return this
@@ -217,7 +215,7 @@ export class ListSelectionStateManager<T> {
         this.set([targetItem])
       }
 
-      this.lastSelectedItem = targetItem
+      this.lastSelected = targetItem
     }
 
     return this
@@ -228,20 +226,18 @@ export class ListSelectionStateManager<T> {
     const { shiftKey } = config
     let targetItem: T
 
-    if (!this.selectedItems.length) {
+    if (!this.selected.length) {
       targetItem = this.items[this.items.length - 1]
 
       this.set([targetItem])
-      this.lastSelectedItem = targetItem
-      this.lastNonShiftClickedItem = targetItem
+      this.lastSelected = targetItem
+      this.lastNonShiftToggled = targetItem
 
       return this
     }
 
-    const lastSelectedIndex = this.items.indexOf(this.lastSelectedItem as T)
-    const lastNonShiftIndex = this.items.indexOf(
-      this.lastNonShiftClickedItem as T
-    )
+    const lastSelectedIndex = this.items.indexOf(this.lastSelected as T)
+    const lastNonShiftIndex = this.items.indexOf(this.lastNonShiftToggled as T)
 
     targetItem = this.items[lastSelectedIndex - 1] as T
 
@@ -249,14 +245,14 @@ export class ListSelectionStateManager<T> {
       if (lastSelectedIndex <= lastNonShiftIndex) {
         this.append(targetItem)
         const group = this.getGroup(targetItem)
-        this.lastSelectedItem = group[0]
+        this.lastSelected = group[0]
       } else {
-        targetItem = this.lastSelectedItem as T
+        targetItem = this.lastSelected as T
         const group = this.getGroup(targetItem)
 
         this.remove(targetItem)
-        this.lastNonShiftClickedItem = group[0]
-        this.lastSelectedItem = group[Math.max(0, group.length - 2)]
+        this.lastNonShiftToggled = group[0]
+        this.lastSelected = group[Math.max(0, group.length - 2)]
       }
 
       return this
@@ -267,43 +263,43 @@ export class ListSelectionStateManager<T> {
         this.set([targetItem])
       }
 
-      this.lastSelectedItem = targetItem
+      this.lastSelected = targetItem
     }
 
     return this
   }
 
   public get() {
-    return this.selectedItems.sort(
+    return this.selected.sort(
       (a, b) => this.items.indexOf(a) - this.items.indexOf(b)
     )
   }
 
   public getIndices() {
-    return this.selectedItems.map(item => this.items.indexOf(item))
+    return this.selected.map(item => this.items.indexOf(item))
   }
 
   public set(items: T[]): this {
-    this.selectedItems = items.sort(
+    this.selected = items.sort(
       (a, b) => this.items.indexOf(a) - this.items.indexOf(b)
     )
 
-    if (!this.selectedItems.length) {
-      this.lastSelectedItem = null
-      this.lastNonShiftClickedItem = null
+    if (!this.selected.length) {
+      this.lastSelected = null
+      this.lastNonShiftToggled = null
     }
-
-    return this
-  }
-
-  public clear(): this {
-    this.set([])
 
     return this
   }
 
   public selectAll(): this {
     this.set([...this.items])
+
+    return this
+  }
+
+  public clear(): this {
+    this.set([])
 
     return this
   }
