@@ -121,9 +121,9 @@ export class ListSelectionStateManager<T> {
     return this.items.reduce((items, item) => {
       if (!this.isSelected(item) || items.flat().includes(item)) return items
 
-      let group = [] as T[]
-      group = [...group, item]
+      let group = [item] as T[]
       let index = this.items.indexOf(item)
+
       while (this.isSelected(this.items[index + 1])) {
         group = [...group, this.items[index + 1]]
         index++
