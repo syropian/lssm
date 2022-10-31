@@ -6,7 +6,7 @@
 
 [Check out the demo](https://lssm-js.netlify.app/)
 
-## Can I customize the style my lists?
+## Can I customize the style of my lists?
 
 `lssm` works purely with data and has no opinions on your UI layer. You can use a list manager to return the currently selected items, compare them against the orignal list of items, and render your UI accordingly.
 
