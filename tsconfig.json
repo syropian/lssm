@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "es2020",
     "useDefineForClassFields": true,
-    "module": "ESNext",
-    "lib": ["ESNext", "DOM"],
-    "moduleResolution": "Node",
+    "downlevelIteration": true,
+    "module": "esnext",
+    "lib": ["esnext", "dom", "dom.iterable"],
+    "moduleResolution": "node",
     "strict": true,
     "sourceMap": true,
     "resolveJsonModule": true,
