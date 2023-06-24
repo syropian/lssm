@@ -4,11 +4,14 @@ export interface ModifierConfig {
   shiftKey?: boolean
 }
 
+export type Comparator<T> = (original: T, selected: T) => boolean
+
 export class ListSelectionStateManager<T> {
   /**
    * Private members
    */
   private items = [] as T[]
+  private comparator: Comparator<T> | undefined = undefined
 
   private selected = [] as T[]
 
@@ -25,18 +28,30 @@ export class ListSelectionStateManager<T> {
    * Private functions
    */
 
+  private indexOfItem(item: T) {
+    return this.comparator
+      ? this.items.findIndex(i => this.comparator?.(i, item))
+      : this.items.indexOf(item)
+  }
+
+  private includesItem(items: T[], item: T) {
+    return this.comparator
+      ? items.some(i => this.comparator?.(i, item))
+      : items.includes(item)
+  }
+
   private setRange(item: T) {
     if (!this.selected.length) {
-      const index = this.items.indexOf(item)
+      const index = this.indexOfItem(item)
 
       if (index < 0) return
 
       this.set(this.items.slice(0, index + 1))
     } else {
       const lastNonShiftItem = this.lastNonShiftToggled as T
-      const lastNonShiftIndex = this.items.indexOf(lastNonShiftItem)
+      const lastNonShiftIndex = this.indexOfItem(lastNonShiftItem)
 
-      const newIndex = this.items.indexOf(item)
+      const newIndex = this.indexOfItem(item)
 
       let startIndex = 0
       let endIndex = 0
@@ -49,7 +64,7 @@ export class ListSelectionStateManager<T> {
 
         const groups = this.asGroups()
         const selectedGroup = groups.find(group =>
-          group.includes(this.items[newIndex])
+          this.includesItem(group, this.items[newIndex])
         )
         if (selectedGroup) {
           // If the last clicked item was not selected (i.e it was toggled off) we need to set our end range to the first item of the next adjacent group
@@ -66,7 +81,7 @@ export class ListSelectionStateManager<T> {
           }
         } else {
           const nextGroupIndex = groups.findIndex(group =>
-            group.some(item => this.items.indexOf(item) > lastNonShiftIndex)
+            group.some(item => this.indexOfItem(item) > lastNonShiftIndex)
           )
           const nextGroupItem = this.items.findIndex(
             item => item === groups[nextGroupIndex][0]
@@ -84,7 +99,7 @@ export class ListSelectionStateManager<T> {
 
       const primaryGroup = this.items.slice(startIndex, endIndex + 1)
       const filteredGroup = this.asGroups().filter(group => {
-        return !primaryGroup.some(item => group.includes(item))
+        return !primaryGroup.some(item => this.includesItem(group, item))
       })
 
       this.set([...new Set([...primaryGroup, ...filteredGroup.flat()])])
@@ -114,15 +129,22 @@ export class ListSelectionStateManager<T> {
   }
 
   private isSelected(item: T) {
-    return this.selected.includes(item)
+    if (this.comparator !== undefined) {
+      return this.selected.some(
+        selectedItem => this.comparator?.(selectedItem, item) ?? false
+      )
+    }
+
+    return this.includesItem(this.selected, item)
   }
 
   private asGroups(): Array<T[]> {
     return this.items.reduce((items, item) => {
-      if (!this.isSelected(item) || items.flat().includes(item)) return items
+      if (!this.isSelected(item) || this.includesItem(items.flat(), item))
+        return items
 
       let group = [item] as T[]
-      let index = this.items.indexOf(item)
+      let index = this.indexOfItem(item)
 
       while (this.isSelected(this.items[index + 1])) {
         group = [...group, this.items[index + 1]]
@@ -136,14 +158,15 @@ export class ListSelectionStateManager<T> {
   private getGroup(item: T) {
     if (!this.isSelected) return []
 
-    return this.asGroups().find(group => group.includes(item)) ?? []
+    return this.asGroups().find(group => this.includesItem(group, item)) ?? []
   }
 
   /**
    * Constructor
    */
-  constructor(items: T[]) {
+  constructor(items: T[], comparator?: Comparator<T>) {
     this.items = items
+    this.comparator = comparator
   }
 
   /**
@@ -188,8 +211,8 @@ export class ListSelectionStateManager<T> {
       return this
     }
 
-    const lastSelectedIndex = this.items.indexOf(this.lastSelected as T)
-    const lastNonShiftIndex = this.items.indexOf(this.lastNonShiftToggled as T)
+    const lastSelectedIndex = this.indexOfItem(this.lastSelected as T)
+    const lastNonShiftIndex = this.indexOfItem(this.lastNonShiftToggled as T)
 
     targetItem = this.items[lastSelectedIndex + 1] as T
 
@@ -236,8 +259,8 @@ export class ListSelectionStateManager<T> {
       return this
     }
 
-    const lastSelectedIndex = this.items.indexOf(this.lastSelected as T)
-    const lastNonShiftIndex = this.items.indexOf(this.lastNonShiftToggled as T)
+    const lastSelectedIndex = this.indexOfItem(this.lastSelected as T)
+    const lastNonShiftIndex = this.indexOfItem(this.lastNonShiftToggled as T)
 
     targetItem = this.items[lastSelectedIndex - 1] as T
 
@@ -271,17 +294,17 @@ export class ListSelectionStateManager<T> {
 
   public get() {
     return this.selected.sort(
-      (a, b) => this.items.indexOf(a) - this.items.indexOf(b)
+      (a, b) => this.indexOfItem(a) - this.indexOfItem(b)
     )
   }
 
   public getIndices() {
-    return this.selected.map(item => this.items.indexOf(item))
+    return this.selected.map(item => this.indexOfItem(item))
   }
 
   public set(items: T[]): this {
     this.selected = items.sort(
-      (a, b) => this.items.indexOf(a) - this.items.indexOf(b)
+      (a, b) => this.indexOfItem(a) - this.indexOfItem(b)
     )
 
     if (!this.selected.length) {

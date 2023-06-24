@@ -30,11 +30,10 @@ To begin, you'll need to create a list manager, and pass it your list of selecta
 import { ListSelectionStateManager as Lssm } from 'lssm'
 
 const items = [
-  { id: 1, name: 'Item 1' },
-  { id: 2, name: 'Item 2' },
-  { id: 3, name: 'Item 3' },
-  { id: 4, name: 'Item 4' },
-  { id: 5, name: 'Item 5' },
+  'Apple',
+  'Banana',
+  'Dragonfruit',
+  'Strawberry',
   // etc...
 ]
 
@@ -156,6 +155,27 @@ Selects all items in the list.
 #### `clear(): this`
 
 Deselcts all items in the list.
+
+### Working with objects
+
+If you are using objects as your list items, you will need to pass a comparator function to the list manager. This is because `lssm` uses strict equality checks to compare items in the list, and objects are not strictly equal to each other even if they have the same properties.
+
+To solve this issue, you may pass a comparator function to the list manager. This function will be used to compare items in the list, and should return `true` if the items are equal, and `false` if they are not.
+
+**Example**
+
+```ts
+const items = [
+  { id: 1, name: 'Item 1' },
+  { id: 2, name: 'Item 2' },
+  { id: 3, name: 'Item 3' },
+  { id: 4, name: 'Item 4' },
+  { id: 5, name: 'Item 5' },
+]
+
+const itemComparator = (a, b) => a.id === b.id
+const listManager = new Lssm(items, itemComparator)
+```
 
 ## Development
 
