@@ -119,7 +119,15 @@ export class ListSelectionStateManager<T> {
   }
 
   private remove(item: T) {
-    this.set(this.selected.filter(i => i !== item))
+    if (this.comparator !== undefined) {
+      this.set(
+        this.selected.filter(
+          selectedItem => !this.comparator?.(selectedItem, item) ?? false
+        )
+      )
+    } else {
+      this.set(this.selected.filter(i => i !== item))
+    }
   }
 
   private append(item: T) {
@@ -129,12 +137,6 @@ export class ListSelectionStateManager<T> {
   }
 
   private isSelected(item: T) {
-    if (this.comparator !== undefined) {
-      return this.selected.some(
-        selectedItem => this.comparator?.(selectedItem, item) ?? false
-      )
-    }
-
     return this.includesItem(this.selected, item)
   }
 
