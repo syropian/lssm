@@ -205,6 +205,14 @@ describe('lssm', () => {
         lm.select(19)
         lm.next()
         expect(lm.get()).toEqual([19])
+
+        lm.clear()
+
+        lm.select(19)
+        lm.next().next()
+        lm.next()
+
+        expect(lm.get()).toEqual([19])
       })
 
       test('When there is multiple items currently selected, it selects the next item after the last selected item', () => {
@@ -322,6 +330,14 @@ describe('lssm', () => {
         lm.select(0)
         lm.previous()
         expect(lm.get()).toEqual([0])
+
+        lm.clear()
+
+        lm.select(2)
+        lm.previous().previous().previous()
+        lm.next()
+
+        expect(lm.get()).toEqual([1])
       })
 
       test('When there is multiple items currently selected, it selects the previous item before the last selected item', () => {

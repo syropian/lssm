@@ -216,7 +216,9 @@ export class ListSelectionStateManager<T> {
     const lastSelectedIndex = this.indexOfItem(this.lastSelected as T)
     const lastNonShiftIndex = this.indexOfItem(this.lastNonShiftToggled as T)
 
-    targetItem = this.items[lastSelectedIndex + 1] as T
+    targetItem = this.items[
+      Math.min(lastSelectedIndex + 1, this.items.length - 1)
+    ] as T
 
     if (shiftKey) {
       if (lastSelectedIndex >= lastNonShiftIndex) {
@@ -234,12 +236,7 @@ export class ListSelectionStateManager<T> {
 
       return this
     } else {
-      if (lastSelectedIndex === this.items.length - 1) {
-        this.set([this.items[this.items.length - 1]])
-      } else {
-        this.set([targetItem])
-      }
-
+      this.set([targetItem])
       this.lastSelected = targetItem
     }
 
@@ -260,11 +257,10 @@ export class ListSelectionStateManager<T> {
 
       return this
     }
-
     const lastSelectedIndex = this.indexOfItem(this.lastSelected as T)
     const lastNonShiftIndex = this.indexOfItem(this.lastNonShiftToggled as T)
 
-    targetItem = this.items[lastSelectedIndex - 1] as T
+    targetItem = this.items[Math.max(0, lastSelectedIndex - 1)] as T
 
     if (shiftKey) {
       if (lastSelectedIndex <= lastNonShiftIndex) {
@@ -282,12 +278,7 @@ export class ListSelectionStateManager<T> {
 
       return this
     } else {
-      if (lastSelectedIndex < 1) {
-        this.set([this.items[0]])
-      } else {
-        this.set([targetItem])
-      }
-
+      this.set([targetItem])
       this.lastSelected = targetItem
     }
 
@@ -305,7 +296,7 @@ export class ListSelectionStateManager<T> {
   }
 
   public set(items: T[]): this {
-    this.selected = items.sort(
+    this.selected = [...items].sort(
       (a, b) => this.indexOfItem(a) - this.indexOfItem(b)
     )
 

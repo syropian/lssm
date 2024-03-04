@@ -41,7 +41,7 @@ const libConfig = defineConfig({
 })
 
 const exampleConfig = defineConfig({
-  base: './',
+  base: '/example',
   plugins: [vue()],
   build: {
     outDir: path.resolve(__dirname, 'dist/example'),
