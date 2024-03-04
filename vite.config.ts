@@ -18,7 +18,7 @@ const getPackageNameCamelCase = () => {
 
 const libConfig = {
   build: {
-    emptyOutDir: false,
+    emptyOutDir: true,
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
       name: getPackageNameCamelCase(),
@@ -30,10 +30,9 @@ const libConfig = {
 }
 
 const exampleConfig = {
-  base: '/example',
   plugins: [vue()],
   build: {
-    outDir: path.resolve(__dirname, 'dist/example'),
+    outDir: path.resolve(__dirname, 'dist'),
     emptyOutDir: true,
     rollupOptions: {
       input: path.resolve(__dirname, 'index.html'),
