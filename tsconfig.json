@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "target": "es2020",
     "useDefineForClassFields": true,
     "downlevelIteration": true,
@@ -15,8 +16,9 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["vite/client"]
   },
-  "include": ["src", "test", "example"],
-  "exclude": ["node_modules"]
+  "include": ["src", "test", "demo", "vite.config.ts"],
+  "exclude": ["node_modules", "dist"]
 }

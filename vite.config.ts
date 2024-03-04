@@ -4,8 +4,6 @@ import vue from '@vitejs/plugin-vue'
 import dts from 'vite-plugin-dts'
 import packageJson from './package.json'
 
-const isProd = process.env.NODE_ENV === 'production'
-
 const getPackageName = () => {
   return packageJson.name
 }
@@ -17,39 +15,33 @@ const getPackageNameCamelCase = () => {
     throw new Error('Name property in package.json is missing.')
   }
 }
-const fileName = {
-  es: `${getPackageName()}.mjs`,
-  cjs: `${getPackageName()}.cjs`,
-  iife: `${getPackageName()}.iife.js`,
-}
 
-const libConfig = defineConfig({
-  base: './',
+const libConfig = {
   build: {
+    emptyOutDir: false,
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
       name: getPackageNameCamelCase(),
-      formats: ['es', 'cjs', 'iife'],
-      fileName: (format) => fileName[format],
     },
   },
   plugins: [
-    dts({
-      insertTypesEntry: true,
-    }),
+    dts({ rollupTypes: true }),
   ],
-})
+}
 
-const exampleConfig = defineConfig({
+const exampleConfig = {
   base: '/example',
   plugins: [vue()],
   build: {
     outDir: path.resolve(__dirname, 'dist/example'),
     emptyOutDir: true,
     rollupOptions: {
-      input: path.resolve(__dirname, 'index.html')
+      input: path.resolve(__dirname, 'index.html'),
     },
   },
-})
+}
 
-export default isProd ? libConfig : exampleConfig
+export default defineConfig(({ mode }) => {
+  return mode === 'lib' ? libConfig : exampleConfig
+});
+
